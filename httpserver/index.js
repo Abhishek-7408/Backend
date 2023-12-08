@@ -1,37 +1,38 @@
 const http = require('http');
-const { type } = require('os');
 const port =8000;
 const fs = require('fs');
-
-
 function requestHandler(req,res){
     console.log(req.url);
-    
-    
     res.writeHead(200,{'content-type': 'text/html'});
    
-    fs.readFile('./index.html',function(err,data){
-        if (err){
+
+
+
+    let filePath;
+    switch(req.url){
+        case '/':
+        filePath = './index.html';
+        break;
+        case 'profile':
+        filePath ='./profile.html';
+        break;
+        default:
+            filePath = './404.html';
+
+    }
+    fs.readFileSync(filePath,function(err,data){
+        if(err){
             console.log('error',err);
-            return res.end('<>Error!</h1>');
-
+            return res.end('<h1>Error!</h1>')
         }
-
-return res.end(data);
-
-    });
-   
-   
-   
-    // res.end('<h1>Gotcha!</h1>');
+    })
 
 }
 
 const server = http.createServer(requestHandler);
-
 server.listen(port,function (err){
 if(err){
-    consolelog(err);
+    console.log(err);
     return;
 }
 console.log("Server is up and running on port:",port);
